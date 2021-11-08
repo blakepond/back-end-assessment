@@ -3,6 +3,8 @@ const cors = require("cors");
 
 const app = express();
 
+let globalId = 0
+const dbJSON = require("./db.json")
 
 app.use(cors());
 app.use(express.json()); // When we want to be able to accept JSON.
@@ -44,13 +46,20 @@ app.get("/api/suggestion", (req,res) => {
   res.status(200).send(suggestions)
 })
 
-let goals = []
 
-app.post("/api/form", (req,res) => {
-  const {newPost} = req.body
-  goals.push(newPost)
-  res.status(200).send(goals)
 
+app.post("/api/goal", (req,res) => {
+  let {name, goalInput} = req.body;
+  const goalsObj = {
+     id: globalId,
+     name: name,
+     goalInput: goalInput
+  }
+  dbJSON.push(goalsObj)
+  globalId++
+  console.log(dbJSON)
+  res.status(200).send(dbJSON)
+  
 })
 
 app.listen(4000, () => console.log("Server running on 4000"));
